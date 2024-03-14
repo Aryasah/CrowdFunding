@@ -16,6 +16,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Layout from "./pages/Layout";
+import AddCandidate from "./pages/AddCandidate";
+import Registration from "./pages/Registration";
 const router = createBrowserRouter([
   {
     id: "root",
@@ -27,6 +29,16 @@ const router = createBrowserRouter([
         path: "",
         Component: Home,
       },
+      {
+        id:"add-candidate",
+        path:"/add-candidate",
+        Component: AddCandidate,
+      },
+      {
+        id:'registration',
+        path:'/registration',
+        Component: Registration,
+      }
     ]
   },
 ]);

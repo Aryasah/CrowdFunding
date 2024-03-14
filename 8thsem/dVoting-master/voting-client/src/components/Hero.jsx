@@ -40,7 +40,7 @@ const Hero = () => {
             Redefining the Future of Voting for Inclusive and Democratic
             Societies.
           </p>
-          <Button href="/pricing" white>
+          <Button href="/voting" white>
             Get started
           </Button>
         </div>

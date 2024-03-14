@@ -6,6 +6,7 @@ import Election from "../contracts/Election.json";
 import Section from "../components/Section";
 import Heading from "../components/Heading";
 import AdminHome from "../components/Home/AdminHome";
+import Button from "../components/Button";
 const Home = () => {
   const [electionInstance, setElectionInstance] = React.useState(null);
   const [account, setAccount] = React.useState(null);
@@ -69,6 +70,57 @@ const Home = () => {
       </>
     );
   }
+  const renderUserBasedOnCondition = () => {
+    if (elStarted && !elEnded) {
+      return (
+        <>
+          <Heading
+            title="Voting is Live."
+            text="Your vote is very important."
+          />
+          <div className="relative">
+            <div className="relative z-1 flex flex-row items-center h-[39rem] mb-5 p-8 border border-n-1/10 rounded-3xl overflow-hidden lg:p-20 xl:h-fit">
+              <div className="w-full h-fit rounded-3xl">
+                <div className="flex flex-col items-center justify-center h-full p-8 gap-y-6">
+                  <h2 className=" h2 ">
+                    {elDetails?.electionTitle ?? "Campus Election"}
+                  </h2>
+                  <p className="body-2 text-xl mt-4 text-n-4">
+                    {elDetails?.organizationTitle ?? "Shree Jain Vidyalaya"}
+                  </p>
+
+                  <p className="text-lg body-2">
+                    {elDetails?.adminTitle ?? "Organiser"} -{" "}
+                    {elDetails?.adminName ?? "Arya Sah"}
+                  </p>
+                  <p className="text-lg body-2 0">
+                    {elDetails?.adminEmail ?? "aryasah30@gmail.com"}
+                  </p>
+                </div>
+                <div className="py-4 w-full flex justify-center items-center">
+             
+                  <Button href="/pricing" white>
+                    Vote Now
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    } else if (elEnded) {
+      return (
+        <>
+          <Heading title="Voting Ended." text="Thank you for voting." />
+        </>
+      );
+    }
+    return (
+      <>
+        <Heading title="Voting Not Started." text="Voting will start soon." />
+      </>
+    );
+  };
   return (
     <>
       <Hero />
@@ -79,12 +131,14 @@ const Home = () => {
         customPaddings
       >
       </Section> */}
-      {!isAdmin ? (
+      {isAdmin ? (
         <>
           <AdminHome account={account} />
         </>
       ) : (
-        <p>Please Wait ...</p>
+        <Section id="form">
+          <div className="container">{renderUserBasedOnCondition()}</div>
+        </Section>
       )}
     </>
   );

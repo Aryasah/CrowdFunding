@@ -121,7 +121,6 @@ contract Election {
         string aadhar;
         bool isVerified;
         bool aadharVerified;
-
         bool hasVoted;
         bool isRegistered;
     }
