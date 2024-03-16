@@ -1,12 +1,10 @@
-import React from "react";
-import Section from "../components/Section";
-import Heading from "../components/Heading";
-import { Gradient } from "../components/design/Hero";
-import Button from "../components/Button";
-import { check } from "../assets";
-import Generating from "../components/Generating";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import getWeb3 from "../../../client/src/getWeb3";
+import Button from "../components/Button";
+import Heading from "../components/Heading";
+import Section from "../components/Section";
+import { Gradient } from "../components/design/Hero";
+import NotInitialised from "../components/shared/NotInitialised";
 import Election from "../contracts/Election.json";
 
 const Registration = () => {
@@ -18,7 +16,17 @@ const Registration = () => {
   const [elStarted, setElStarted] = React.useState(false);
   const [elEnded, setElEnded] = React.useState(false);
   const [elDetails, setElDetails] = React.useState(null);
-
+  const [isRegistered, setIsRegistered] = React.useState(false);
+  const [voterDetails, setVoterDetails] = React.useState({
+    address: "0x0",
+    name: "",
+    phone: "",
+    hasVoted: false,
+    isVerified: false,
+    isRegistered: false,
+    isAadharVerified: false,
+  });
+  const formRef = React.useRef(null);
   useEffect(() => {
     const loadWeb3 = async () => {
       if (!window.location.hash) {
@@ -47,17 +55,37 @@ const Registration = () => {
         const start = await instance.methods.getStart().call();
         setElStarted(start);
         const end = await instance.methods.getEnd().call();
-       setElEnded(end);
-  
+        setElEnded(end);
+
         // Total number of voters
-        const voterCount = await instance.methods
-          .getTotalVoter()
-          .call();
+        const voterCount = await instance.methods.getTotalVoter().call();
         setRegisteredVoters(voterCount);
 
         // load current account
-        const voterDetails = await instance.methods.voterDetails(accounts[0]).call();
-        console.log('voter Details',voterDetails);
+        const voterDetails = await instance.methods
+          .voterDetails(accounts[0])
+          .call();
+        console.log("voter Details", voterDetails);
+        if (voterDetails) {
+          console.log("voterDetails", voterDetails);
+          formRef.current["floating_first_name"].value =
+            voterDetails?.name?.split(" ")[0] ?? "";
+          formRef.current["floating_last_name"].value =
+            voterDetails?.name?.split(" ")[1] ?? "";
+          formRef.current["phone_number"].value = voterDetails?.phone;
+          formRef.current["aadhar_number"].value = voterDetails?.aadhar;
+          setVoterDetails((voterDetails) => ({
+            ...voterDetails,
+            isRegistered: voterDetails?.isRegistered,
+            isVerified: voterDetails?.isVerified,
+            isRegistered: voterDetails?.isRegistered,
+            isAadharVerified: voterDetails?.aadharVerified,
+            name: voterDetails?.name,
+            phone: voterDetails?.phone,
+            address: voterDetails?.address,
+          }));
+        }
+        setIsRegistered(voterDetails?.isRegistered);
         setIsAdmin(admin === accounts[0]);
       } catch (error) {
         console.error(error);
@@ -66,6 +94,26 @@ const Registration = () => {
     loadWeb3();
   }, []);
 
+  const registerVoter = async (e) => {
+    e.preventDefault();
+    const firstName = formRef.current["floating_first_name"].value;
+    const lastName = formRef.current["floating_last_name"].value;
+    const phone = formRef.current["phone_number"].value;
+    console.log({
+      firstName,
+      lastName,
+      phone,
+    });
+    try {
+      await electionInstance.methods
+        .registerVoter(firstName + lastName, phone)
+        .send({ from: account, gas: 1000000 });
+      window.location.reload();
+    } catch (e) {
+      console.log(e);
+      alert("Error occured while registering. Please try again later.");
+    }
+  };
   if (!web3) {
     return (
       <>
@@ -75,6 +123,9 @@ const Registration = () => {
       </>
     );
   }
+  // if (!elStarted && !elEnded) {
+  //   return <NotInitialised />;
+  // }
   return (
     <Section>
       <div className="container">
@@ -87,7 +138,9 @@ const Registration = () => {
         <div className="relative">
           <div className="relative z-1 flex flex-row items-center h-fit  mb-5 p-8 border border-n-1/10 rounded-3xl overflow-hidden lg:p-20 ">
             <form
-              action=""
+              ref={formRef}
+              // action="reload"
+              onSubmit={registerVoter}
               className="flex flex-col w-full h-full items-center justify-start"
             >
               <div className={`mx-auto  text-left my-2 w-full`}>
@@ -180,6 +233,54 @@ const Registration = () => {
                   Aadhar Number
                 </label>
               </div>
+              <div className={`${voterDetails?.isRegistered ? 'flex' : 'hidden'} w-full flex-col md:flex-row justify-start items-center`}>
+                <div className="relative w-full md:w-1/2 flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="candidates"
+                      aria-describedby="candidates-description"
+                      name="candidates"
+                      type="checkbox"
+                      checked={voterDetails?.isVerified ?? false}
+                      className="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label
+                      htmlFor="candidates"
+                      className="font-medium text-gray-500"
+                    >
+                      Admin Verified
+                    </label>
+                    {/* <p id="candidates-description" className="text-gray-500">
+                    It is verified by the admin.
+                  </p> */}
+                  </div>
+                </div>
+                <div className="relative w-full md:w-1/2 flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="candidates"
+                      aria-describedby="candidates-description"
+                      name="candidates"
+                      type="checkbox"
+                      checked={voterDetails?.isAadharVerified ?? false}
+                      className="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label
+                      htmlFor="candidates"
+                      className="font-medium text-gray-500"
+                    >
+                      Aadhar Verified
+                    </label>
+                    {/* <p id="candidates-description" className="text-gray-500">
+                    It is verified by the user.
+                  </p> */}
+                  </div>
+                </div>
+              </div>
               <div className="w-full text-left text-xs md:text-sm text-n-4 leading-7 my-5 tracking-wide">
                 <h2>Do not forget to verify aadhar once registered.</h2>
                 <p>
@@ -191,7 +292,7 @@ const Registration = () => {
               </div>
               <div className="w-full flex justify-start items-center">
                 <Button typ="submit" white>
-                  Register
+                  {isRegistered ? "Update" : "Register"}
                 </Button>
               </div>
             </form>
