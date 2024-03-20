@@ -18,6 +18,7 @@ import {
 import Layout from "./pages/Layout";
 import AddCandidate from "./pages/AddCandidate";
 import Registration from "./pages/Registration";
+import VerificationPage from "./pages/VerificationPage";
 const router = createBrowserRouter([
   {
     id: "root",
@@ -30,16 +31,21 @@ const router = createBrowserRouter([
         Component: Home,
       },
       {
-        id:"add-candidate",
-        path:"/add-candidate",
+        id: "add-candidate",
+        path: "/add-candidate",
         Component: AddCandidate,
       },
       {
-        id:'registration',
-        path:'/registration',
+        id: "registration",
+        path: "/registration",
         Component: Registration,
-      }
-    ]
+      },
+      {
+        id: "verification",
+        path: "/verification",
+        Component: VerificationPage,
+      },
+    ],
   },
 ]);
 const App = () => {
