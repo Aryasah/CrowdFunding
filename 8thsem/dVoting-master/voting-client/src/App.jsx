@@ -19,6 +19,7 @@ import Layout from "./pages/Layout";
 import AddCandidate from "./pages/AddCandidate";
 import Registration from "./pages/Registration";
 import VerificationPage from "./pages/VerificationPage";
+import Voting from "./pages/Voting";
 const router = createBrowserRouter([
   {
     id: "root",
@@ -45,6 +46,11 @@ const router = createBrowserRouter([
         path: "/verification",
         Component: VerificationPage,
       },
+      {
+        id: "voting",
+        path: "/voting",
+        Component: Voting,
+      }
     ],
   },
 ]);

@@ -101,6 +101,15 @@ const VerificationPage = () => {
       </Section>
     );
   }
+  if (!web3) {
+    return (
+      <>
+        <center className="text-white text-lg">
+          Loading Web3, accounts, and contract...
+        </center>
+      </>
+    );
+  }
 
   const renderUnverifiedVoters = (voter) => {
     const verifyVoter = async (verifiedStatus, address) => {
