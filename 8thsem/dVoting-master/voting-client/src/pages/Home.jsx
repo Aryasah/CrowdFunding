@@ -15,6 +15,34 @@ const Home = () => {
   const [elStarted, setElStarted] = React.useState(false);
   const [elEnded, setElEnded] = React.useState(false);
   const [elDetails, setElDetails] = React.useState(null);
+
+  const endElection = async () => {
+    try {
+      await electionInstance.methods
+        .endElection()
+        .send({ from: account, gas: 3000000 });
+      setElEnded(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const regiserElection = async (data) => {
+    const { name, email, adminTitle, electionTitle, organisationTitle } = data;
+    try {
+      await electionInstance.methods
+        .setElectionDetails(
+          name,
+          email,
+          adminTitle,
+          electionTitle,
+          organisationTitle
+        )
+        .send({ from: account, gas: 3000000 });
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     const loadWeb3 = async () => {
       if (!window.location.hash) {
@@ -39,10 +67,10 @@ const Home = () => {
         setElectionInstance(instance);
         setWeb3(web3);
         setAccount(accounts[0]);
-        const admin = await electionInstance?.methods.admin().call();
-        const started = await electionInstance?.methods.started().call();
-        const ended = await electionInstance?.methods.ended().call();
-        const details = await electionInstance?.methods.details().call();
+        const admin = await instance?.methods?.admin().call();
+        const started = await instance?.methods?.getStart().call();
+        const ended = await instance?.methods?.getEnd().call();
+        const details = await instance?.methods?.getElectionDetails().call();
         setIsAdmin(admin === accounts[0]);
         setElStarted(started);
         setElEnded(ended);
@@ -98,7 +126,6 @@ const Home = () => {
                   </p>
                 </div>
                 <div className="py-4 w-full flex justify-center items-center">
-             
                   <Button href="/pricing" white>
                     Vote Now
                   </Button>
@@ -133,7 +160,22 @@ const Home = () => {
       </Section> */}
       {isAdmin ? (
         <>
-          <AdminHome account={account} />
+          <AdminHome
+            registerElection={regiserElection}
+            account={account}
+            elStarted={elStarted}
+            elEnded={elEnded}
+            elDetails={elDetails}
+          />
+          <div className="container">
+            {elStarted && !elEnded && (
+              <div className="flex justify-center items-center gap-4">
+                <Button onClick={endElection} white>
+                  End Election
+                </Button>
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <Section id="form">

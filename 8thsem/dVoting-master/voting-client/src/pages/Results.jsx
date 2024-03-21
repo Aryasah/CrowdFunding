@@ -5,7 +5,7 @@ import getWeb3 from "../../../client/src/getWeb3";
 import Election from "../contracts/Election.json";
 import Heading from "../components/Heading";
 import Button from "../components/Button";
-const Voting = () => {
+const Results = () => {
   const [registeredVoters, setRegisteredVoters] = React.useState(0);
   const [electionInstance, setElectionInstance] = React.useState(null);
   const [account, setAccount] = React.useState(null);
@@ -69,6 +69,7 @@ const Voting = () => {
             .candidateDetails(i)
             .call();
 
+            console.log("candidateDetails", candidateDetails);
           _candidates.push({
             id: candidateDetails.candidateId,
             header: candidateDetails.header,
@@ -238,4 +239,4 @@ const Voting = () => {
   );
 };
 
-export default Voting;
+export default Results;

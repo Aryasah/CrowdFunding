@@ -99,6 +99,7 @@ const Registration = () => {
     const firstName = formRef.current["floating_first_name"].value;
     const lastName = formRef.current["floating_last_name"].value;
     const phone = formRef.current["phone_number"].value;
+    const aadhar = formRef.current["aadhar_number"].value;
     console.log({
       firstName,
       lastName,
@@ -106,7 +107,7 @@ const Registration = () => {
     });
     try {
       await electionInstance.methods
-        .registerVoter(firstName + lastName, phone)
+        .registerAsVoter(firstName + lastName, phone,aadhar)
         .send({ from: account, gas: 1000000 });
       window.location.reload();
     } catch (e) {

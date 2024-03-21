@@ -190,4 +190,5 @@ contract Election {
     function getEnd() public view returns (bool) {
         return end;
     }
+    
 }

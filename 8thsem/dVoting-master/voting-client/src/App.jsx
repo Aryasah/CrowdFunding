@@ -20,6 +20,7 @@ import AddCandidate from "./pages/AddCandidate";
 import Registration from "./pages/Registration";
 import VerificationPage from "./pages/VerificationPage";
 import Voting from "./pages/Voting";
+import Results from "./pages/Results";
 const router = createBrowserRouter([
   {
     id: "root",
@@ -50,7 +51,12 @@ const router = createBrowserRouter([
         id: "voting",
         path: "/voting",
         Component: Voting,
-      }
+      },
+      {
+        id: "results",
+        path: "/results",
+        Component: Results,
+      },
     ],
   },
 ]);

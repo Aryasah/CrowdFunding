@@ -60,6 +60,7 @@ const VerificationPage = () => {
           const voter = await instance?.methods
             ?.voterDetails(voterAddress)
             .call();
+          console.log("voter", voter);
           _voters.push({
             address: voter.voterAddress,
             name: voter.name,
@@ -71,18 +72,7 @@ const VerificationPage = () => {
             hasVoted: voter.hasVoted,
           });
         }
-        setVoters([
-          {
-            address: "",
-            name: "",
-            phone: "",
-            isRegistered: false,
-            isAdhaarVerified: false,
-
-            isVerified: false,
-          },
-          ..._voters,
-        ]);
+        setVoters([..._voters]);
       } catch (error) {
         console.error(error);
       }
@@ -130,11 +120,11 @@ const VerificationPage = () => {
         className={`md:flex h-fit  even:md:translate-y-[7rem] p-0.25 rounded-[2.5rem] bg-conic-gradient`}
       >
         <div className="relative p-8 w-full bg-n-8 rounded-[2.4375rem] overflow-hidden xl:p-8">
-          <div className="relative z-2 flex flex-col p-[2.4rem] pointer-events-none text-n-3">
+          <div className="relative z-2 flex flex-col p-[2.4rem]  text-n-3">
             <div className="grid gap-y-6 grid-cols-2 text-lg tracking-wide items-center">
               <h5 className=" col-span-2">
                 Account Address:{" "}
-                <span className="text-n-2">{"0x8000000000000000"}</span>
+                <span className="text-n-2">{voter?.address}</span>
               </h5>
               <p className="">
                 Name: <span className="text-n-2">{voter?.name}</span>
@@ -146,21 +136,25 @@ const VerificationPage = () => {
                 Aadhar Number: <span className="text-n-2">{voter?.aadhar}</span>
               </p>
               <p className="">
-                Voted: <span className="text-n-2">{voter?.hasVoted}</span>
+                Voted: <span className="text-n-2">{voter?.hasVoted ? "true" : "false"}</span>
               </p>
               <p className="">
                 Adhaar Verified:{" "}
-                <span className="text-n-2">{voter?.isAdhaarVerified}</span>
+                <span className="text-n-2">{voter?.isAdhaarVerified ? "true" : "false"}</span>
               </p>
               {voter.isVerified ? (
                 <p className="">
                   Admin Verified:{" "}
-                  <span className="text-n-2">{voter.isVerified}</span>
+                  <span className="text-n-2">
+                    {Boolean(voter?.isVerified) ? "true" : "false"}
+                  </span>
                 </p>
               ) : (
                 <Button
                   className="w-2/3"
                   onClick={async () => {
+                    console.log("voter", voter);
+
                     await verifyVoter(true, voter.address);
                   }}
                 >

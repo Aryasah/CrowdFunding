@@ -19,15 +19,12 @@ const loadAddedCandidates = (candidates) => {
     <>
       {candidates.map((candidate, index) => {
         return (
-          <div className="container-list success">
+          <div className="container-list success w-full">
             <div
-              style={{
-                maxHeight: "21px",
-                overflow: "auto",
-              }}
+              className="flex justify-start items-center gap-3"
             >
               {candidate.id ?? 1}
-              {index + 1}. <strong>{candidate.header ?? "BJP"}</strong>:{" "}
+              {index + 1}. <strong>{candidate.header ?? "BJP"}</strong>
               {candidate.slogan ?? "sabka sath sabka bikas"}
             </div>
           </div>
@@ -251,8 +248,8 @@ const AddCandidate = () => {
       <Section>
         <div className="container">
           <Heading title="Candidate List Registered" />
-          <div className="relative">
-            <div className="flex flex-1 justify-center h-full items-center p-8 lg:p-16 mb-10 border border-n-1/10 rounded-3xl">
+          <div className="relative w-full">
+            <div className="flex flex-col justify-center h-full w-full items-center p-8 lg:p-16 mb-10 border border-n-1/10 rounded-3xl">
               {loadAddedCandidates(candidates)}
             </div>
           </div>
